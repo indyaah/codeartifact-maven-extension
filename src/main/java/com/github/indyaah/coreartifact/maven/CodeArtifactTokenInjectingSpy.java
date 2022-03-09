@@ -1,5 +1,7 @@
 package com.github.indyaah.coreartifact.maven;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.util.Properties;
 import javax.inject.Named;
 import org.apache.maven.eventspy.AbstractEventSpy;
@@ -20,10 +22,14 @@ public class CodeArtifactTokenInjectingSpy extends AbstractEventSpy {
     }
     final MavenExecutionRequest request = (MavenExecutionRequest) event;
     final Properties systemProperties = request.getSystemProperties();
+    final Properties userProperties = request.getUserProperties();
 
-    final String username = systemProperties.getProperty("CODEARTIFACT_USERNAME", "aws");
-    final String domain = systemProperties.getProperty("CODEARTIFACT_DOMAIN");
-    final String owner = systemProperties.getProperty("CODEARTIFACT_OWNER");
+    final String username =
+        resolveProperty("CODEARTIFACT_USERNAME", systemProperties, userProperties, "aws");
+    final String domain =
+        resolveProperty("CODEARTIFACT_DOMAIN", systemProperties, userProperties, null);
+    final String owner =
+        resolveProperty("CODEARTIFACT_OWNER", systemProperties, userProperties, null);
 
     final GetAuthorizationTokenRequest tokenRequest =
         GetAuthorizationTokenRequest.builder().domain(domain).domainOwner(owner).build();
@@ -34,5 +40,17 @@ public class CodeArtifactTokenInjectingSpy extends AbstractEventSpy {
     request.getServers().stream()
         .filter(server -> username.equalsIgnoreCase(server.getUsername()))
         .forEach(server -> server.setPassword(token));
+  }
+
+  private String resolveProperty(
+      String propertyName, Properties system, Properties user, String defaultVal) {
+    final String sysProp = system.getProperty(propertyName);
+    final String sysPropPrefix = system.getProperty("env." + propertyName);
+    final String userProp = user.getProperty(propertyName);
+
+    if (isNotBlank(userProp)) return userProp;
+    else if (isNotBlank(sysProp)) return sysProp;
+    else if (isNotBlank(sysPropPrefix)) return sysProp;
+    else return defaultVal;
   }
 }
