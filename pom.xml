@@ -101,4 +101,16 @@
         </plugins>
 
     </build>
+
+    <distributionManagement>
+
+        <repository>
+            <id>github</id>
+            <name>indyaah</name>
+            <url>https://maven.pkg.github.com/indyaah/codeartifact-maven-extension</url>
+        </repository>
+
+    </distributionManagement>
+
+
 </project>
