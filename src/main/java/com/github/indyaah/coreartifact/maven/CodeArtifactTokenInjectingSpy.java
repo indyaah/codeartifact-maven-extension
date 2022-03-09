@@ -50,7 +50,7 @@ public class CodeArtifactTokenInjectingSpy extends AbstractEventSpy {
 
     if (isNotBlank(userProp)) return userProp;
     else if (isNotBlank(sysProp)) return sysProp;
-    else if (isNotBlank(sysPropPrefix)) return sysProp;
+    else if (isNotBlank(sysPropPrefix)) return sysPropPrefix;
     else return defaultVal;
   }
 }
