@@ -25,8 +25,8 @@ When `MavenExecutionRequest` is fired in the build reactor; we intercept it and 
 using AWS java SDK. For doing that we rely on following system properties;
 
 1. `CODEARTIFACT_USERNAME` defaults to `aws`
-2. `CODEARTIFACT_DOMAIN`
-3. `CODEARTIFACT_OWNER`
+2. `CODEARTIFACT_DOMAIN` defaults to domain derived from CodeArtifact URL. e.g. if URL is https://my_domain-111122223333.d.codeartifact.us-west-2.amazonaws.com/maven/my_repo/ domain is derived as `my_domain`
+3. `CODEARTIFACT_OWNER` defaults to account id derived from CodeArtifact URL.  e.g. if URL is https://my_domain-111122223333.d.codeartifact.us-west-2.amazonaws.com/maven/my_repo/ owner is derived as `111122223333`
 
 The extension will generate a token for given code artifact domain and owner (account id). Any
 servers in the reactor that are using `CODEARTIFACT_USERNAME`'s value as username would have their
