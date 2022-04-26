@@ -65,7 +65,7 @@ public class CodeArtifactTokenInjectingSpy extends AbstractEventSpy {
                               "CODEARTIFACT_OWNER",
                               systemProperties,
                               userProperties,
-                              matcher.group(1));
+                              matcher.group(2));
                       final String key = domain + owner + region;
                       final String token =
                           tokenCache.computeIfAbsent(
