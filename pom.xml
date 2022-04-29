@@ -6,7 +6,7 @@
 
     <groupId>io.github.indyaah</groupId>
     <artifactId>codeartifact-maven-extension</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <name>CodeArtifact Maven Extension</name>
     <description>Maven extension that intercepts start of maven execution and injects token for CodeArtifact
         repositories

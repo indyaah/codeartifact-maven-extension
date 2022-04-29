@@ -9,13 +9,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.inject.Named;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.repository.Authentication;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.settings.Server;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.codeartifact.CodeartifactClient;
 import software.amazon.awssdk.services.codeartifact.model.GetAuthorizationTokenRequest;
@@ -27,7 +30,6 @@ public class CodeArtifactTokenInjectingSpy extends AbstractEventSpy {
   private static final Pattern CODE_ARTIFACT_PATTERN =
       Pattern.compile(
           "([a-zA-Z]+){1,63}-([0-9]{12})\\.d\\.codeartifact.([a-z]+-[a-z]+-[0-9])\\.amazonaws\\.com");
-  private final CodeartifactClient codeartifactClient = CodeartifactClient.builder().build();
   private final Map<String, String> tokenCache = new ConcurrentHashMap<>();
 
   @Override
@@ -96,7 +98,13 @@ public class CodeArtifactTokenInjectingSpy extends AbstractEventSpy {
 
     event.getServers().stream()
         .filter(server -> username.equalsIgnoreCase(server.getUsername()))
-        .forEach(server -> server.setPassword(repoServerIdToTokenMap.get(server.getId())));
+        .forEach(
+            server -> {
+              final String password = repoServerIdToTokenMap.get(server.getId());
+              if (StringUtils.isNotBlank(password)) {
+                server.setPassword(password);
+              }
+            });
   }
 
   private String resolveProperty(
