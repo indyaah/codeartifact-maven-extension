@@ -27,7 +27,7 @@ public class CodeArtifactTokenInjectingSpy extends AbstractEventSpy {
 
   private static final Pattern CODE_ARTIFACT_PATTERN =
       Pattern.compile(
-          "([a-zA-Z]+){1,63}-([0-9]{12})\\.d\\.codeartifact.([a-z]+-[a-z]+-[0-9])\\.amazonaws\\.com");
+          "([a-zA-Z-]+){1,63}-([0-9]{12})\\.d\\.codeartifact.([a-z]+-[a-z]+-[0-9])\\.amazonaws\\.com");
   private final Map<String, String> tokenCache = new ConcurrentHashMap<>();
 
   @Override
